@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script>
+        function displayUserInfo() {
+    const username = sessionStorage.getItem('username');
+    if (username) {
+        const userInfoContainer = document.querySelector('.nav-container');
+        const userInfo = document.createElement('div');
+        userInfo.classList.add('user-info');
+        userInfo.innerHTML = `
+            <p><i class="fas fa-user"></i> ยินดีต้อนรับ, ${username}</p>
+            <button onclick="logout()" class="logout-button">Logout</button>
+        `;
+        userInfoContainer.appendChild(userInfo);
+
+        // ซ่อนปุ่ม Register
+        const registerLink = document.getElementById('register-link');
+        if (registerLink) {
+            registerLink.style.display = 'none';
+        }
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('user_id'); // ลบ user_id ด้วยหากมีการตั้งค่าไว้
+    sessionStorage.removeItem('token');
+    window.location.href = 'main.html';
+}
+
+window.onload = function() {
+    displayUserInfo();
+        };
+    </script>
+    <style>
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 20px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info p {
+            margin: 0;
+            padding-right: 10px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="main.html">
+                <img src="img/logo-removebg-preview.png" class="logonav">
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="sidebar">
+            <input type="text" class="sidebar-serch" placeholder="Search Something...">
+            <a href="" class="sidebar-items">HOME</a>
+            <a href="" class="sidebar-items">ABOUT ME</a>
+            <a href="" class="sidebar-items">CONTACT US</a>
+            <a href="login.html" class="sidebar-items" id="register-link">REGISTER</a>
+        </div>
+        <div class="product">
+            <div class="product-items">
+                <a href="L_Product.html?id=1">
+                    <img class="product-img" src="/img/d1b11d5e4dbae547ac0d651476cec488.png">
+                </a>
+                <p>LEAGUE OF LEGEND</p>
+                <p>0-5000 bath</p>
+            </div>
+            <div class="product-items">
+                <a href="L_Product.html?id=2">
+                    <img class="product-img" src="/img/unnamed.png">
+                </a>
+                <p>PUBG</p>
+                <p>0-5000 bath</p>
+            </div>
+            <div class="product-items">
+                <a href="L_Product.html?id=3">
+                    <img class="product-img" src="/img/Steam.jfif">
+                </a>
+                <p>STEAM</p>
+                <p>0-5000 bath</p>
+            </div>
+            <div class="product-items">
+                <a href="L_Product.html?id=4">
+                    <img class="product-img" src="/img/Valorant.jfif">
+                </a>
+                <p>VALORANT</p>
+                <p>0-5000 bath</p>
+            </div>
+            <div class="product-items">
+                <a href="L_Product.html?id=5">
+                    <img class="product-img" src="/img/team.jpg">
+                </a>
+                <p>TACTICTEAM FIGHT</p>
+                <p>0-5000 bath</p>
+            </div>
+        </div>
+    </div>
+    <div class="modal"></div>
+</body>
+</html>

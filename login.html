@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS for Login Page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .login-container h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .login-container input[type="text"], 
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .login-container .login-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-container .login-button:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none; /* Hidden by default */
+        }
+        .register-link {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .register-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        // ฟังก์ชันสำหรับแสดงข้อความแสดงข้อผิดพลาดถ้ามีพารามิเตอร์ error ใน URL
+        function showErrorFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('error')) {
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('error-message').textContent = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+            }
+        }
+
+        // ฟังก์ชันสำหรับเข้าสู่ระบบผ่าน API
+        async function handleLogin(event) {
+    event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('error-message');
+    
+    try {
+        const response = await fetch('http://localhost:3333/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            // เก็บ token, username และ user_id ลงใน sessionStorage
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('username', data.username);
+            sessionStorage.setItem('user_id', data.user_id); // เพิ่ม user_id ลงใน sessionStorage
+            
+            // หากล็อกอินสำเร็จ เปลี่ยนหน้าไปยังหน้าหลัก
+            window.location.href = 'main.html';
+        } else {
+            // หากล็อกอินไม่สำเร็จ แสดงข้อความแสดงข้อผิดพลาด
+            errorMessage.textContent = data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+            errorMessage.style.display = 'block';
+        }
+    } catch (error) {
+        errorMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์';
+        errorMessage.style.display = 'block';
+        console.error('Login error:', error);
+    }
+}
+
+
+        // เรียกใช้ฟังก์ชันเมื่อโหลดหน้าเว็บ
+        window.onload = showErrorFromUrl;
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <h1>เข้าสู่ระบบ</h1>
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id="username" name="username" placeholder="ชื่อผู้ใช้" required>
+            <input type="password" id="password" name="password" placeholder="รหัสผ่าน" required>
+            <button type="submit" class="login-button">ล็อกอิน</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+        <div class="register-link">
+            <p>หากยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a></p>
+        </div>
+    </div>
+</body>
+</html>

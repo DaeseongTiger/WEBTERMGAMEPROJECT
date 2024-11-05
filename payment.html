@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="qrcode.min.js"></script>
+    <script>
+        window.onload = function() {
+            const userId = sessionStorage.getItem('user_id');
+            if (!userId) {
+                alert("กรุณาเข้าสู่ระบบก่อนทำรายการนี้");
+                window.location.href = 'login.html';
+            }
+
+            // โหลดค่า selectedProductId และ selectedProductPrice จาก sessionStorage
+            selectedProductId = sessionStorage.getItem('selectedProductId');
+            selectedProductPrice = sessionStorage.getItem('selectedProductPrice');
+
+          
+        };
+
+        let selectedProductId;
+        let selectedProductPrice;
+
+        function showNotification() {
+        const userId = sessionStorage.getItem('user_id');
+        const productId = sessionStorage.getItem('selectedProductId');
+
+        if (!userId || !productId) {
+            alert("กรุณาเข้าสู่ระบบและเลือกสินค้าให้เรียบร้อย");
+            return;
+        }
+
+        // Show loading notification
+        const loadingNotification = document.createElement('div');
+        loadingNotification.className = 'notification';
+        loadingNotification.textContent = 'กรุณา รอสักครู่...';
+        document.body.appendChild(loadingNotification);
+
+        // Send order data to the server
+        fetch('http://localhost:3333/api/confirm_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                product_id: productId,
+                payment_status: 0
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                loadingNotification.remove();
+                const successNotification = document.createElement('div');
+                successNotification.className = 'notification';
+                successNotification.textContent = 'คำสั่งซื้อเสร็จสิ้น กรุณาตรวจสอบอีเมลสำหรับรายละเอียดคำสั่งซื้อ';
+                document.body.appendChild(successNotification);
+                setTimeout(() => successNotification.remove(), 5000);
+            } else {
+                loadingNotification.remove();
+                alert('ไม่สามารถบันทึกคำสั่งซื้อได้ กรุณาลองอีกครั้ง');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            loadingNotification.remove();
+            alert('เกิดข้อผิดพลาดในการยืนยันคำสั่งซื้อ');
+        });
+    }
+
+        function showPaymentDetails(method) {
+            const accountDetails = document.querySelector(".account-details");
+            if (!accountDetails) {
+                console.error("Cannot find .account-details element");
+                return;
+            }
+
+            if (!selectedProductPrice) {
+                alert("กรุณาเลือกสินค้าก่อนทำการชำระเงิน");
+                return;
+            }
+
+            if (method === "TrueMoney") {
+                accountDetails.innerHTML = `
+                    <p>ชื่อบัญชีสำหรับชำระเงิน:</p>
+                    <p>ชื่อ : กรัณย์พงศ์ คชแก้ว</p>
+                    <p>เบอร์ : 065-502-3702</p>
+                    <p>คุณเลือกผลิตภัณฑ์ RP: ${selectedProductId}</p>
+                    <p>ยอดที่ต้องจ่าย: ${selectedProductPrice} บาท</p>
+                `;
+            } else if (method === "QR") {
+                accountDetails.innerHTML = `
+                    <p>วิธีชำระเงิน: โอนเงินธนาคาร</p>
+                    <p>สแกน QR Code เพื่อชำระเงิน</p>
+                    <p>คุณเลือกผลิตภัณฑ์ RP: ${selectedProductId}</p>
+                    <p>ยอดที่ต้องจ่าย: ${selectedProductPrice} บาท</p>
+                    <button class="qr-button" onclick="generatePromptPayQRCode()">สร้าง QR Code</button>
+                    <div id="qrcode" class="qr-code-container"></div>
+                `;
+            }
+        }
+
+        function generatePromptPayQRCode() {
+            if (!selectedProductPrice) {
+                alert("กรุณาเลือกสินค้าก่อน");
+                return;
+            }
+
+            fetch('http://localhost:3333/generateQR', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: selectedProductPrice }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.RespCode === 200) {
+                    const qrCodeContainer = document.getElementById("qrcode");
+                    qrCodeContainer.innerHTML = ""; 
+                    const img = document.createElement("img");
+                    img.src = data.Result;
+                    qrCodeContainer.appendChild(img);
+                } else {
+                    console.error('Error generating QR Code:', data.RespMessage);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function showNotification() {
+            const userId = sessionStorage.getItem('user_id');
+            const productId = selectedProductId;
+
+            fetch('http://localhost:3333/api/confirm_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userId, product_id: productId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const notification = document.createElement('div');
+                    notification.className = 'notification';
+                    notification.textContent = 'คำสั่งซื้อเสร็จสิ้น กรุณาตรวจสอบหมายเลขคำสั่งซื้อในอีเมลของคุณ';
+                    document.body.appendChild(notification);
+                    setTimeout(() => notification.remove(), 5000);
+                } else {
+                    console.error('Failed to confirm order:', data.message);
+                    alert('ไม่สามารถบันทึกคำสั่งซื้อได้ กรุณาลองอีกครั้ง');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการยืนยันคำสั่งซื้อ');
+            });
+        }
+
+        async function uploadSlip() {
+            const fileInput = document.getElementById('slipUpload');
+            const formData = new FormData();
+
+            if (fileInput.files.length === 0) {
+                alert("กรุณาเลือกไฟล์สำหรับอัปโหลด");
+                return;
+            }
+
+            formData.append('image', fileInput.files[0]);
+
+            const userId = sessionStorage.getItem('user_id');
+            if (!userId) {
+                alert("กรุณาเข้าสู่ระบบก่อนอัปโหลด");
+                return;
+            }
+
+            formData.append('user_id', userId);
+
+            try {
+                const response = await fetch('http://localhost:3333/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    alert('สลิปอัปโหลดสำเร็จ: ' + data.imageUrl);
+                } else {
+                    alert('การอัปโหลดล้มเหลว: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการอัปโหลด');
+            }
+        }
+        function confirmPayment() {
+    const userId = sessionStorage.getItem('user_id');
+    const paymentAmount = selectedProductPrice; // ใช้ยอดชำระจากรายการที่เลือก
+
+    if (!userId || !paymentAmount) {
+        alert("กรุณาเข้าสู่ระบบและเลือกยอดชำระเงินก่อน");
+        return;
+    }
+
+    fetch('http://localhost:3333/api/confirm_order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId, payment_amount: paymentAmount })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('การชำระเงินเสร็จสิ้น กรุณาตรวจสอบหมายเลขในอีเมลของคุณ');
+        } else {
+            console.error('Failed to confirm payment:', data.message);
+            alert('ไม่สามารถบันทึกคำสั่งซื้อได้ กรุณาลองอีกครั้ง');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('เกิดข้อผิดพลาดในการยืนยันคำสั่งซื้อ');
+    });
+}
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .payment-container {
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        .payment-container h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .payment-methods {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .method {
+            width: 100px;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .method img {
+            width: 80px;
+            height: auto;
+            margin-bottom: 8px;
+            transition: transform 0.3s ease;
+        }
+        .method:hover img {
+            transform: scale(1.05);
+        }
+        .order-details, .account-details {
+            margin-top: 10px;
+            padding: 12px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            text-align: left;
+        }
+        .confirm-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #4CAF50;
+            display: block;
+            width: 100%;
+        }
+        .confirm-button:hover { background-color: #45a049; }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 1000;
+        }
+        .notification.show { opacity: 1; }
+        .product-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-items {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px 0;
+            text-align: center;
+        }
+        .product-items img {
+            width: 100%;
+            height: auto;
+        }
+        .upload-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #f44336;
+            display: block;
+            width: 100%;
+        }
+        .upload-button:hover { background-color: #d32f2f; }
+        .refresh-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #2196F3;
+            display: block;
+            width: 100%;
+        }
+        .refresh-button:hover { background-color: #1976D2; }
+        .qr-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #1f3a93; /* สีกรมท่า */
+    display: block;
+    width: 100%;
+}
+.qr-button:hover {
+    background-color: #162d5a; /* สีกรมท่าเข้มขึ้นเมื่อ hover */
+}
+.qr-code-container {
+    display: flex;
+    justify-content: center; /* จัดให้อยู่ตรงกลาง */
+    align-items: center;
+    margin-top: 20px;
+}
+
+.qr-code-container img {
+    width: 200px; /* กำหนดขนาดของ QR Code */
+    height: 200px; /* ขนาดที่ต้องการ */
+}
+        
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <h1>ชำระเงิน</h1>
+        <p>โปรดเลือกวิธีการชำระเงินที่คุณต้องการ:</p>
+        
+        <div class="payment-methods">
+            <div class="method" onclick="showPaymentDetails('TrueMoney')">
+                <img src="img/truemoney_large_logo.jpg" alt="TrueMoney">
+                <p>True Money</p>
+            </div>
+            <div class="method" onclick="showPaymentDetails('QR')">
+                <img src="img/icon-thaiqr.png" alt="QR Payment">
+                <p>โอนเงินธนาคาร</p>
+            </div>
+        </div>
+
+        <div class="order-details">
+            <p>รายละเอียดการสั่งซื้อ:</p>
+            <div class="account-details">
+                <p>โปรดเลือกวิธีการชำระเงินเพื่อดูรายละเอียด</p>
+            </div>
+        </div>
+
+        <div class="product-list">
+            <!-- รายการสินค้าจะแสดงที่นี่ -->
+        </div>
+        <button class="upload-button" onclick="document.getElementById('slipUpload').click()">แนบภาพสลิปการโอนเงิน</button>
+        <input type="file" id="slipUpload" style="display:none" accept="image/*" onchange="uploadSlip()">
+        <button class="confirm-button" onclick="confirmPayment()">ยืนยันการชำระเงิน</button>
+
+
+    </div>
+</body>
+</html>

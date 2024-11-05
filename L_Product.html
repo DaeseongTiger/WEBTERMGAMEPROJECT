@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script>
+        function selectProduct(rp, price) {
+    const userId = sessionStorage.getItem('user_id');
+    if (!userId) {
+        alert("กรุณาล็อกอินก่อนเลือกสินค้า");
+        window.location.href = 'login.html';
+        return;
+    }
+    sessionStorage.setItem('selectedProductId', rp); // เก็บรหัสผลิตภัณฑ์ใน sessionStorage
+    sessionStorage.setItem('selectedProductPrice', price); // เก็บราคาใน sessionStorage
+    window.location.href = 'payment.html';
+}
+
+        function displayUserInfo() {
+            const username = sessionStorage.getItem('username');
+            if (username) {
+                const userInfoContainer = document.querySelector('.nav-container');
+                const userInfo = document.createElement('div');
+                userInfo.classList.add('user-info');
+                userInfo.innerHTML = `
+                    <p><i class="fas fa-user"></i> ยินดีต้อนรับ, ${username}</p>
+                    <button onclick="logout()" class="logout-button">Logout</button>
+                `;
+                userInfoContainer.appendChild(userInfo);
+                document.getElementById('register-link').style.display = 'none';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('user_id');
+            sessionStorage.removeItem('selectedProductId');
+            sessionStorage.removeItem('selectedProductPrice');
+            window.location.href = 'main.html';
+        }
+
+        window.onload = function() {
+            displayUserInfo();
+        };
+    </script>
+    <style>
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 20px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info p {
+            margin: 0;
+            padding-right: 10px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="main.html">
+                <img src="img/logo-removebg-preview.png" class="logonav">
+            </a>
+        </div>
+    </nav>
+    
+    <!--LOL-->
+    <div class="container2">
+        <div class="productL">
+            <img class="product-imgL" src="img/d1b11d5e4dbae547ac0d651476cec488.png">
+            <p>LEAGUE OF LEGEND</p>
+        </div>
+        <div class="product-def">
+            <h1>เติมเกม League of Legends คุ้มสุด แถมผ่อนจ่ายได้</h1>
+            <br>
+            <p>เติม RP ถูกกว่าเติมเอง ใช้แค่ Riot ID ถูกกว่าเติมเองแน่นอน และผ่อนจ่ายได้ นานสูงสุด 10 เดือน แถมมี Richman Coin ไว้ใช้เป็นส่วนลดครั้งถัดไป สูงสุด 25%</p>
+            <p>เติม RP สะดวก คุ้ม</p><br>
+            <p>1. คัดลอก Riot ID จากในเกม<br></p>
+            <p>2. เลือก ช่องทางการชำระเงิน สแกน QR, ผ่อนชำระบัตรเครดิต หรือ ทรูมันนี่</p>
+            <p>3. เลือก แพ็ก RP ที่ต้องการเติม</p>
+            <p>4. ตรวจสอบและยืนยันรายการคำสั่งซื้อ แล้วทำการชำระเงิน</p>
+            <p>5. RP จะเข้าเกมอัตโนมัติ</p>
+        </div>
+    </div>
+
+    <!-- Product Packages -->
+    <h3>3. เลือกแพ็คเกจเติมเกม LOL PC</h3>
+    <div class="container3">
+        <div class="Product-lol">
+            <div class="Product-type-lol">
+                <p class="class-text-product">577 RP</p>
+                <p class="class-text-product">155 บาท</p>
+                <button onclick="selectProduct('577', '155')">เลือกสินค้า</button>
+            </div>
+            <div class="Product-type-lol">
+                <p class="class-text-product">1380 RP</p>
+                <p class="class-text-product">260 บาท</p>
+                <button onclick="selectProduct('1380', '260')">เลือกสินค้า</button>
+            </div>
+            <div class="Product-type-lol">
+                <p class="class-text-product">2800 RP</p>
+                <p class="class-text-product">548 บาท</p>
+                <button onclick="selectProduct('2800', '548')">เลือกสินค้า</button>
+            </div>
+            <div class="Product-type-lol">
+                <p class="class-text-product">4500 RP</p>
+                <p class="class-text-product">798 บาท</p>
+                <button onclick="selectProduct('4500', '798')">เลือกสินค้า</button>
+            </div>
+            <div class="Product-type-lol">
+                <p class="class-text-product">6500 RP</p>
+                <p class="class-text-product">1,121 บาท</p>
+                <button onclick="selectProduct('6500', '1121')">เลือกสินค้า</button>
+            </div>
+            <div class="Product-type-lol">
+                <p class="class-text-product">13,500 RP</p>
+                <p class="class-text-product">2,286 บาท</p>
+                <button onclick="selectProduct('13500', '2286')">เลือกสินค้า</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

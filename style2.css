@@ -1,0 +1,167 @@
+/* รีเซ็ตค่าเบื้องต้นให้ UI ดูเป็นระเบียบ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* จัดพื้นหลังของหน้าหลัก */
+body {
+    background-color: #f4f4f4;
+    padding: 10px;
+}
+
+/* .container2: Responsive Flexbox Layout */
+.container2 {
+    width: calc(100vw - 40px);
+    outline: solid black;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap; /* ให้ย่อขนาดเมื่อหน้าจอเล็ก */
+    justify-content: center;
+    padding: 10px;
+    gap: 20px; /* เพิ่มช่องว่างระหว่างสินค้า */
+}
+
+/* สินค้าภายใน .container2 */
+.productL {
+    font-weight: bold;
+    width: 100%; /* เริ่มต้นเต็มหน้าจอ */
+    max-width: 500px; /* กำหนดขนาดสูงสุด */
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* รูปสินค้า */
+.product-imgL {
+    margin: 5px;
+    margin-right: 30px;
+    width: 30vw;
+    max-width: 150px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* .payment: Layout แบบ Grid */
+.payment {
+    width: 100%; /* ขยายเต็มคอนเทนเนอร์ */
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+/* ปุ่ม Payment */
+.payment-method {
+    font-weight: bold;
+    border-radius: 5px;
+    outline: solid black;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.payment-method:hover {
+    transform: scale(1.05); /* เพิ่มลูกเล่นเมื่อโฮเวอร์ */
+}
+
+/* รูป Payment */
+.img-payment {
+    width: 15vw;
+    max-width: 100px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* .container3: คอนเทนเนอร์ที่มีเงา */
+.container3 {
+    width: calc(100vw - 40px);
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* .Product-lol: Layout แบบ Grid */
+.Product-lol {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    background-color: #e0fff4;
+    padding: 10px;
+    border-radius: 10px;
+    outline: 1px solid #ccc;
+}
+
+/* การ์ดสินค้าภายใน Product-lol */
+.Product-type-lol {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Product-type-lol:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ข้อความภายในสินค้า */
+.class-text-product {
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Media Queries: ปรับตามขนาดหน้าจอ */
+@media (max-width: 768px) {
+    .product-imgL {
+        width: 40vw; /* ขยายให้ใหญ่ขึ้นในจอเล็ก */
+    }
+
+    .img-payment {
+        width: 20vw; /* ให้ใหญ่ขึ้นตามหน้าจอ */
+    }
+
+    .payment {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* ลดขนาดคอลัมน์ */
+    }
+
+    .Product-lol {
+        grid-template-columns: 1fr; /* เรียงในแนวตั้ง */
+    }
+}
+
+@media (max-width: 480px) {
+    .productL {
+        flex-direction: column; /* เรียงในแนวตั้งในจอเล็ก */
+        align-items: center;
+        text-align: center;
+    }
+
+    .product-imgL {
+        margin-right: 0;
+    }
+
+    .payment {
+        grid-template-columns: 1fr; /* หนึ่งคอลัมน์ในหน้าจอเล็ก */
+    }
+}

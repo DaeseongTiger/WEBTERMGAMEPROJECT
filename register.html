@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS for Register Page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .register-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .register-container h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .register-container input[type="text"], 
+        .register-container input[type="password"], 
+        .register-container input[type="email"], 
+        .register-container input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .register-container .register-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .register-container .register-button:hover {
+            background-color: #45a049;
+        }
+        .error-message, .success-message {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+    </style>
+    <script>
+        async function registerUser(event) {
+            event.preventDefault(); // ป้องกันการรีเฟรชหน้าเมื่อส่งฟอร์ม
+
+            const name = document.getElementById("name").value;
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorMessage = document.getElementById("error-message");
+            const successMessage = document.getElementById("success-message");
+
+            // ตรวจสอบว่ากรอกข้อมูลครบถ้วน
+            if (!name || !phone || !email || !username || !password) {
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "กรุณากรอกข้อมูลให้ครบทุกช่อง";
+                successMessage.style.display = "none";
+                return;
+            }
+
+            // ตรวจสอบว่ารหัสผ่านและยืนยันรหัสผ่านตรงกันหรือไม่
+            if (password !== confirmPassword) {
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "รหัสผ่านไม่ตรงกัน";
+                successMessage.style.display = "none";
+                return;
+            }
+
+            try {
+                // ส่งข้อมูลไปที่ API
+                const response = await fetch('http://localhost:3333/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, email, name, phone })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // แสดงข้อความว่าลงทะเบียนสำเร็จ
+                    successMessage.style.display = "block";
+                    successMessage.textContent = "ลงทะเบียนสำเร็จ!";
+                    errorMessage.style.display = "none";
+
+                    // นำผู้ใช้ไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 1000);
+                } else {
+                    // แสดงข้อความข้อผิดพลาด
+                    errorMessage.style.display = "block";
+                    errorMessage.textContent = data.message || "เกิดข้อผิดพลาดในการลงทะเบียน";
+                    successMessage.style.display = "none";
+                }
+            } catch (error) {
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์";
+                successMessage.style.display = "none";
+                console.error('Registration error:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="register-container">
+        <h1>ลงทะเบียน</h1>
+        <form onsubmit="registerUser(event)">
+            <input type="text" id="name" placeholder="ชื่อ" required>
+            <input type="tel" id="phone" placeholder="เบอร์โทรศัพท์" required>
+            <input type="email" id="email" placeholder="อีเมล" required>
+            <input type="text" id="username" placeholder="ID ผู้ใช้" required>
+            <input type="password" id="password" placeholder="รหัสผ่าน" required>
+            <input type="password" id="confirmPassword" placeholder="ยืนยันรหัสผ่าน" required>
+            <button type="submit" class="register-button">ลงทะเบียน</button>
+            <p id="error-message" class="error-message"></p>
+            <p id="success-message" class="success-message"></p>
+        </form>
+    </div>
+</body>
+</html>

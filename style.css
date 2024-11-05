@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 'Noto Sans','sans-serif';
+    text-decoration: none;
+}
+nav{
+    width: 100%;
+    height: 8vw;
+    background: linear-gradient(125deg,#e61b3e,#9c1032);
+}
+.nav-container{
+    max-width: 90vw;
+    height: 100%;
+    background-color: brown;
+    margin: 0 auto;
+    display: flex;
+    justify-content:space-between ;
+    align-items: center;
+}
+.logonav{
+    width: 11vw;
+    object-fit: contain;
+}
+.nav-container, p{
+    font-size: 25px;
+}
+.nav-profile{
+    background-color: #e61b3e;
+    display: flex;
+    align-items: center;
+}
+.nav-profile-name{
+    color: aliceblue;
+    font-size: 1.2vw;
+    margin-right: 20px;
+}
+.fa-cart-shopping{
+    font-size: 2vw;
+    color:white
+
+}
+.nav-profile-cart{
+    position: relative;
+}
+.cartcount{
+    position:absolute;
+    font-size: 1.2rem;
+    top: -10px;
+    left: 25px;
+    width: 20px;
+    height: 20px;
+    background-color: bisque;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}
+.container{
+    width: 90vw;
+    margin: 0   auto;
+    display: flex;
+    
+}
+.sidebar{
+    width: 20%;
+    padding: 10px;
+    
+    display: flex;
+    flex-direction: column;
+}
+.product{
+    width: 80%;
+    padding: 10px;
+    
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+
+}
+.sidebar-serch{
+    padding: 10px;
+    font-size: 1.2vw;
+    border: 2px solid transparent;
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+.sidebar-serch:focus{
+    border: 2px solid #e61b3e
+}
+.sidebar-items{
+    font-size: 1.2vw;
+    background-color:#f2f2f2;
+    color: black;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+.sidebar-items:hover{
+    background: #9c1032;
+    color: white;
+}
+.product-items{
+   font-size: 1.0rem;
+   font-weight: bold;
+   font-family: "Afacad Flux", sans-serif;
+   cursor: pointer;
+   transition: 0,3ms;
+
+}
+.product-items:hover{
+    transform: scale(1.03);
+}
+.product-img{
+    width: 100%;
+    height: 17vw;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.class-text-product{
+    margin: 15px;
+    align-items: center;
+    justify-content: center;
+}
